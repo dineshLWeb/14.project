@@ -4,43 +4,105 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>14.proje</title>
+    <title>Values – React Demo</title>
     <link rel="stylesheet" href="main.css">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* Prevent FOUC while Babel compiles */
+        body { visibility: visible; }
+    </style>
 </head>
 <body>
-    
-    <div class="all">
-        <div class="container">
-            <img class="urun" src="image/image 1.png" alt="">
-            <div class="info">
-                <span>Free shipping</span>
-                <h2>Razer Kraken Kitty Edt Gaming Headset Quartz</h2>
-                <h5>599$</h5>
-                <div class="cizgi"></div>
-                <h1>199$</h1>
-                <h6>The offer is valid until April 3 or as long as stock lasts!</h6>
-                <div class="dis-cizgi">
-                    <button>Add to Cart</button>
-                </div>
-                <div class="stok">
-                    <img src="image/yuvarlak.svg" alt="">
-                    <p>50+ pcs. in stock.</p>
-                </div>
-                <div class="down-button">
-                    <button>
-                        <img src="image/terazi-icon.svg" alt="">
-                        Add to Cart
-                    </button>
-                    <button>
-                        <img src="image/kalp.svg" alt="">
-                        Add to wishlist
-                    </button>
-                    <h1>okk</h1>
-                    <p>hello</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="root"></div>
 
+    <script type="text/babel">
+        const { useMemo } = React;
+
+        function Monogram({ text, size = 72, bg = '#ffffff' }) {
+            const letters = useMemo(() => {
+                if (!text) return '?';
+                const words = text.split(/\s+/).filter(Boolean);
+                const picked = (words[0]?.[0] || '') + (words[1]?.[0] || '');
+                return picked.toUpperCase();
+            }, [text]);
+            const style = {
+                width: size + 'px',
+                height: size + 'px',
+                borderRadius: '9999px',
+                background: bg,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 700,
+                color: '#333',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.10)'
+            };
+            return (
+                <div className="logo" style={style} aria-hidden>
+                    {letters}
+                </div>
+            );
+        }
+
+        function ValueRow({ text, colors, tilt = -8, leftBadge, rightBadge }) {
+            const [c1, c2] = colors;
+            const rowStyle = { '--tilt': tilt + 'deg' };
+            const pillStyle = {
+                background: `linear-gradient(90deg, ${c1}, ${c2})`
+            };
+            return (
+                <div className="value-row" style={rowStyle}>
+                    {leftBadge && (
+                        <div className="left-badge">
+                            <Monogram text={leftBadge} />
+                        </div>
+                    )}
+                    <div className="pill" style={pillStyle}>
+                        <div className="pill-content" aria-label={text}>{text}</div>
+                    </div>
+                    {rightBadge && (
+                        <div className="right-badge">
+                            <Monogram text={rightBadge} />
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        function App() {
+            const items = [
+                { text: 'Have Backbone; Disagree and Commit', colors: ['#ffa0c2','#ff5fae'], left: 'ACT', right: 'FLIGHT' },
+                { text: 'Hire and Develop the best', colors: ['#ffdeae','#ffb47a'], left: 'DATA', right: 'ATB' },
+                { text: 'Invent and Simplify', colors: ['#fff29f','#ffe36b'], left: 'DATA AI', right: '' },
+                { text: 'Continuous Improvement', colors: ['#b9f198','#5be464'], left: '', right: 'ATB' },
+                { text: 'Dive Deep', colors: ['#93f5ff','#55e1f3'], left: 'VEND', right: '' },
+                { text: 'Learn and Be Curious', colors: ['#aac2c7','#6d8790'], left: '', right: 'DIVVY' },
+                { text: 'Innovation', colors: ['#c6c7ff','#acaff9'], left: 'CA', right: '' },
+                { text: 'Customer Obsession', colors: ['#d3b5d8','#a08ab0'], left: '', right: 'API' },
+                { text: 'Agile Mindset', colors: ['#ffb0b9','#ff8aa2'], left: 'SUNNY', right: '' },
+                { text: 'Insist on Highest Standards', colors: ['#fff3a6','#ffe86c'], left: '', right: 'FB' }
+            ];
+
+            return (
+                <div className="values-root">
+                    {items.map((item, index) => (
+                        <ValueRow
+                            key={index}
+                            text={item.text}
+                            colors={item.colors}
+                            leftBadge={item.left}
+                            rightBadge={item.right}
+                            tilt={index % 2 === 0 ? -9 : 9}
+                        />
+                    ))}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
